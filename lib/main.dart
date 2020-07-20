@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
       'http://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=d04170c862564246a9865ac63f2cd6ff';
   List data;
   List filteredNews;
-  _HomePageState({this.data});
+  _HomePageState({this.data, this.filteredNews});
 
   Future<String> getData() async {
     var res = await http
@@ -45,6 +45,7 @@ class _HomePageState extends State<HomePage> {
       var content = json.decode(res.body);
       data = content['articles'];
       filteredNews = content['articles'];
+      // filteredNews = data;
     });
     return 'success!';
   }
@@ -145,13 +146,9 @@ class _HomePageState extends State<HomePage> {
                         onChanged: (string) {
                           setState(() {
                             filteredNews = data
-                                .where((element) =>
-                                    element.title
-                                        .toLowerCase()
-                                        .contains(string.toLowerCase()) ||
-                                    element.author
-                                        .toLowerCase()
-                                        .contains(string.toLowerCase()))
+                                .where((element) => element['title']
+                                    .toLowerCase()
+                                    .contains(string.toLowerCase()))
                                 .toList();
                           });
                         },
@@ -166,9 +163,9 @@ class _HomePageState extends State<HomePage> {
               child: Container(
                 margin: EdgeInsets.only(bottom: 150),
                 child: ListView.builder(
-                  itemCount: data == null ? 0 : data.length,
+                  itemCount: filteredNews == null ? 0 : filteredNews.length,
                   itemBuilder: (BuildContext context, int index) {
-                    // data = filteredNews[index];
+                    // data = filteredNews;
                     return InkWell(
                       onTap: () {
                         Navigator.of(context).push(new MaterialPageRoute(
@@ -194,8 +191,8 @@ class _HomePageState extends State<HomePage> {
                                     topRight: Radius.circular(16),
                                   ),
                                   image: DecorationImage(
-                                    image:
-                                        NetworkImage(data[index]['urlToImage']),
+                                    image: NetworkImage(
+                                        filteredNews[index]['urlToImage']),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -226,7 +223,8 @@ class _HomePageState extends State<HomePage> {
                                                   color: Colors.white,
                                                 ),
                                                 Text(
-                                                  data[index]['publishedAt'],
+                                                  filteredNews[index]
+                                                      ['publishedAt'],
                                                   style: TextStyle(
                                                       color: Colors.white),
                                                 )
@@ -290,7 +288,7 @@ class _HomePageState extends State<HomePage> {
                                               CrossAxisAlignment.start,
                                           children: <Widget>[
                                             Text(
-                                              data[index]['author'],
+                                              filteredNews[index]['author'],
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
                                                   color: Colors.white,
@@ -309,7 +307,7 @@ class _HomePageState extends State<HomePage> {
                                           Container(
                                             width: 200,
                                             child: Text(
-                                              data[index]['title'],
+                                              filteredNews[index]['title'],
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 1,
                                               softWrap: true,

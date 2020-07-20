@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'news.dart';
 // import 'package:toast/toast.dart';
 
 class DetailScreen extends StatelessWidget {
   int count = 0;
   List data;
   int index;
-  DetailScreen({@required this.data, this.index});
+  final String news;
+  DetailScreen({@required this.data, this.index, this.news});
   int _currenttab = 0;
   @override
   Widget build(BuildContext context) {
